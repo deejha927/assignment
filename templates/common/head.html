@@ -8,6 +8,14 @@
       type="text/css"
       href="{% static 'css/styles.css' %}"
     />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/fontawesome.min.css"
+      integrity="sha512-siarrzI1u3pCqFG2LEzi87McrBmq6Tp7juVsdmGY1Dr8Saw+ZBAzDzrGwX3vgxX1NkioYNCFOVC0GpDPss10zQ=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script src="https://cdn.tailwindcss.com"></script>
   </head>
@@ -17,7 +25,7 @@
       <div class="flex gap-5">
         {% if not user.is_authenticated %}
         <div>
-          <a href="/login">Login</a>
+          <a href="/">Login</a>
         </div>
         <div>
           <a href="/register">Register</a>

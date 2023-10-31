@@ -1,6 +1,8 @@
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, redirect
+from django.http import JsonResponse
+from django.core import serializers
 from django.db.models import Q
 from django.views import View
 from .modelForms import *
@@ -17,7 +19,7 @@ class RegisterView(View):
         form = RegistrationForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect("/register")
+            return redirect("/")
         return render(request, "user/register.html", {"form": form})
 
 
@@ -51,9 +53,16 @@ class QuestionView(LoginRequiredMixin, View):
     login_url = "/"
 
     def get(self, request):
-        questions = Question.objects.filter(Q(active=True) & ~Q(author=request.user.id))
+        questions = (
+            Question.objects.prefetch_related(
+                "answers",
+            )
+            .filter(Q(active=True) & ~Q(author=request.user.id))
+            .order_by("-created_at")
+        )
         form = QuestionForm()
-        return render(request, "question/home.html", {"form": form, "questions": questions})
+        ansForm = AnswerForm()
+        return render(request, "question/home.html", {"form": form, "questions": questions, "answer": ansForm})
 
     def post(self, request):
         data = request.POST.copy()
@@ -61,6 +70,19 @@ class QuestionView(LoginRequiredMixin, View):
         data["text"] = text if text.endswith("?") else text + "?"
         data["author"] = request.user.id
         form = QuestionForm(data)
+        if form.is_valid():
+            form.save()
+            return redirect("/home")
+
+
+class AnswerView(LoginRequiredMixin, View):
+    login_url = "/"
+
+    def post(self, request, id):
+        data = request.POST.copy()
+        data["author"] = request.user.id
+        data["question"] = id
+        form = AnswerForm(data)
         if form.is_valid():
             form.save()
             return redirect("/home")
