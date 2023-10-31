@@ -1,0 +1,23 @@
+{% block content %} {% include "common/head.html" %}
+<div class="max-w-3xl mx-auto px-2 py-10">
+  <form method="POST" class="flex flex-col gap-2">
+    {% csrf_token %}
+    <div>{{form.text}}</div>
+    <div class="flex justify-end">
+      <button type="submit" style="padding: 7px 10px">Post Question</button>
+    </div>
+  </form>
+  {% if questions|length > 0 %}
+  <div class="flex flex-col gap-3 mt-2">
+    {% for val in questions %}
+    <div
+      class="p-2 flex flex-col gap-2 border-2 rounded-sm bg-gray-100 cursor-pointer questions"
+    >
+      <div class="text-xs">Asked by {{val.author.username}}</div>
+      <div class="text-lg text-bold hover:underline">{{val.text|capfirst}}</div>
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+</div>
+{% endblock %}
