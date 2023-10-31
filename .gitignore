@@ -41,9 +41,7 @@ __pycache__/
 # Temporary files
 *.swp
 
-# Django migrations
 
-*/migrations/
 
 # .DS_Store files on macOS
 .DS_Store
