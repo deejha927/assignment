@@ -1,8 +1,7 @@
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.shortcuts import render, redirect
 from django.http import JsonResponse
-from django.core import serializers
 from django.db.models import Q
 from django.views import View
 from .modelForms import *
@@ -55,7 +54,7 @@ class QuestionView(LoginRequiredMixin, View):
     def get(self, request):
         questions = (
             Question.objects.prefetch_related(
-                "answers",
+                "answers__likes",
             )
             .filter(Q(active=True) & ~Q(author=request.user.id))
             .order_by("-created_at")
@@ -86,3 +85,22 @@ class AnswerView(LoginRequiredMixin, View):
         if form.is_valid():
             form.save()
             return redirect("/home")
+
+
+class LikeView(LoginRequiredMixin, View):
+    login_url = "/"
+
+    def get(self, request, id):
+        answer = get_object_or_404(Answer, id=id)  # Get the answer object
+        if answer.author == request.user:
+            return JsonResponse({"message": "You cannot like your own answer."}, status=403)
+        likeExist = Like.objects.filter(user=request.user.id, answer=id)
+        if likeExist.exists():
+            likeExist.delete()
+            return JsonResponse({"message": "Like has been Removed", "liked": False})
+        data = {"user": request.user.id, "answer": id}
+        form = LikeForm(data)
+        if form.is_valid():
+            form.save()
+            return JsonResponse({"message": "Liked the answer", "liked": True})
+        return JsonResponse({"message": "Something went wrong"}, status=400)

@@ -25,10 +25,16 @@ class Answer(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
 
+    class Meta:
+        ordering = ["-created_at"]
+
     def __str__(self):
         return f"{self.author.username} -> Question No {str(self.question.id)}"
 
 
 class Like(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    answer = models.ForeignKey(Answer, on_delete=models.CASCADE)
+    answer = models.ForeignKey(Answer, on_delete=models.CASCADE, related_name="likes")
+
+    def __str__(self):
+        return f"{self.user.username} -> Answer No {str(self.answer.id)}"

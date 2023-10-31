@@ -16,6 +16,7 @@ db.sqlite3
 
 # Virtual environment
 venv/
+testing/
 .env
 
 # User uploads and media files (assuming you're using Django's media handling)

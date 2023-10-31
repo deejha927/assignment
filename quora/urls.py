@@ -7,4 +7,5 @@ urlpatterns = [
     path("logout/", LogoutView.as_view(), name="logout-view"),
     path("home/", QuestionView.as_view(), name="question-view"),
     path("answer/<int:id>/", AnswerView.as_view(), name="answer-view"),
+    path("like/<int:id>/", LikeView.as_view(), name="like-view"),
 ]

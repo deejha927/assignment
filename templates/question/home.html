@@ -16,14 +16,14 @@
       <div class="text-xs">Asked by {{val.author.username}}</div>
       <div class="text-lg font-bold hover:underline">{{val.text|capfirst}}</div>
       <div class="bg-gray-400 py-2 px-1 rounded-sm text-[#000]">
-        {% if val.answers.all %} {% with most_recent_answer=val.answers.last %}
+        {% if val.answers.all %} {% with most_recent_answer=val.answers.first %}
         <p>
           <span class="text-xs font-semibold">Last answered on:</span>
           {{most_recent_answer.created_at }}
         </p>
-        <p>
+        <p class="max-w-[90%] text-justify">
           <span class="text-xs font-semibold">Lastest answer:</span>
-          {{most_recent_answer.text }}
+          {{most_recent_answer.text|safe|truncatechars:200 }}
         </p>
         <div class="my-1 font-bold flex justify-center gap-1">
           <p
@@ -60,14 +60,22 @@
             class="ml-3 my-3 bg-white px-2 py-2 rounded-sm flex flex-col gap-1"
           >
             <div class="flex justify-between items-center">
-              <div class="font-bold">{{answer.text}}</div>
+              <div class="font-bold max-w-[70%] text-justify">
+                {{answer.text}}
+              </div>
               <div class="text-xs">{{answer.created_at}}</div>
             </div>
-            <div class="flex justify-end">
+            <div class="flex justify-between items-center">
+              <div class="font-bold text-xs">
+                Answered by {{answer.author.username}}
+              </div>
               <button
                 class="px-3 py-1 rounded-full border-2 border-black text-sm font-bold"
+                onclick="likeComment({{answer.id}})"
               >
-                ^ Upvote
+                <span id="like-{{answer.id}}" value="{{answer.likes.all.count}}"
+                  >{{answer.likes.all.count}}</span
+                >^ Upvote
               </button>
             </div>
           </div>

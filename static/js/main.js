@@ -27,5 +27,28 @@ function hideOverLay() {
     $("#text").text("");
     $("#overlay").css("display", "none");
 }
+async function likeComment(id) {
+    try {
+
+        const div = $(`#like-${id}`);
+        let count = parseInt(div.text());
+        const apiUrl = `/like/${id}/`;
+        const response = await fetch(apiUrl);
+        if (response.status == 403) {
+            const data = await response.json();
+            return alert(data["message"]);
+        };
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        const data = await response.json();
+        count = data["liked"] ? count + 1 : count - 1;
+        div.text(count);
+
+
+    } catch (error) {
+        console.error('Request failed:', error);
+    }
+}
 
 
