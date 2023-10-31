@@ -1,5 +1,6 @@
 # Before running this project please read this.
 
+## Please create 2 seprate account as you cannot see you own post in your own feed.
 ## Django Assignment Project
 This is a Django project developed by Deepak Jha for assignment purpose.
 For database I have used default database sqlite and for front-end designing 
